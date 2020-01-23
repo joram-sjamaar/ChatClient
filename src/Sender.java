@@ -1,3 +1,5 @@
+import model.User;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -5,12 +7,17 @@ import java.net.Socket;
 
 public class Sender extends Thread {
 
-    private Socket socket;
+    Receiver receiver;
+    Socket socket;
     OutputStream outputStream;
+    Controller controller;
+    User user;
 
-    public Sender(Socket socket) throws IOException {
+    public Sender(Socket socket, Controller controller, User user) throws IOException {
         this.socket = socket;
-        outputStream = socket.getOutputStream();
+        this.outputStream = socket.getOutputStream();
+        this.controller = controller;
+        this.user = user;
     }
 
     public void run() {
@@ -33,6 +40,12 @@ public class Sender extends Thread {
 
     public void logout() {
         send("QUIT");
+        user.setUsername("");
+        user.setLoggedIn(false);
+    }
+
+    public void pong() {
+        send("PONG");
     }
 
 }
