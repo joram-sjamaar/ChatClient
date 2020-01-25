@@ -1,3 +1,6 @@
+package threads;
+
+import controllers.Controller;
 import model.User;
 
 import java.io.IOException;
@@ -20,15 +23,11 @@ public class Sender extends Thread {
         this.user = user;
     }
 
-    public void run() {
-
-    }
-
     public void broadcast(String message) {
         send("BCST " + message);
     }
 
-    private void send(String message) {
+    public void send(String message) {
         PrintWriter writer = new PrintWriter(outputStream);
         writer.println(message);
         writer.flush();
