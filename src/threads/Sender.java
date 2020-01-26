@@ -33,6 +33,21 @@ public class Sender extends Thread {
         writer.flush();
     }
 
+    public void sendFile(String username, String filename, int packageNumber, int totalPackages, byte[] content) {
+
+        String bytes = new String(content);
+
+        String format = String.format("FILETRANSFER %s %s %d %d %s", filename, username, packageNumber, totalPackages, bytes);
+
+        try {
+            outputStream.write(format.getBytes(), 0, format.length());
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void login(String username) {
         send("HELO " + username);
     }

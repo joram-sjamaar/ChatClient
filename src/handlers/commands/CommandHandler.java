@@ -1,13 +1,14 @@
 package handlers.commands;
 
+import controllers.Controller;
 import model.User;
 import threads.Sender;
 
 public class CommandHandler {
 
-    public static void handle(String command, Sender sender, User user) {
+    public static void handle(String command, Sender sender, User user, Controller controller) {
 
-        command = command.replace(".", "");
+        command = command.replaceFirst(".", "");
 
         String command_name = command.split(" ")[0];
 
@@ -58,6 +59,14 @@ public class CommandHandler {
 
             case "kick":
                 GroupHandler.kickFromGroup(sender, command, user);
+                break;
+
+
+            /* **************
+             File transfer
+            *****************/
+            case "transfer":
+                FileTransferHandler.transfer(sender, command, user, controller);
                 break;
 
 

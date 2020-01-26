@@ -21,7 +21,7 @@ public class ErrorHandler {
                 break;
 
             default:
-                System.out.printf("ERROR: %s", error.replace("-ERR ", ""));
+                System.out.printf("ERROR: %s\n", error.replace("-ERR ", ""));
                 break;
 
         }

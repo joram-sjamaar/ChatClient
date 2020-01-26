@@ -20,7 +20,7 @@ public class Controller {
     private Sender sender;
 
     private String login_error = "";
-    private boolean waiting_for_login = false;
+    private boolean waiting_for_login = true;
     public boolean exit = false;
 
     private User user = new User();
@@ -73,7 +73,7 @@ public class Controller {
 
                 String message = scanner.nextLine();
 
-                MessageHandler.handle(message, sender, user);
+                MessageHandler.handle(message, sender, user, this);
             }
 
         }

@@ -36,6 +36,10 @@ public class Receiver extends Thread {
 
                 if (message != null) {
 
+                    // Houston, we've established contact!
+                    if (message.startsWith("HELO"))
+                        controller.setWaitingForLogin(false);
+
                     // We've got an error!
                     if (message.startsWith("-ERR"))
                         ErrorHandler.handleError(message, controller);
