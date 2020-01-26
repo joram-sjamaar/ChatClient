@@ -13,6 +13,9 @@ public class CommandHandler {
 
         switch (command_name) {
 
+            /* **************
+             Client commands
+            *****************/
             case "logout":
                 sender.logout();
                 break;
@@ -21,18 +24,46 @@ public class CommandHandler {
                 user.printSentMessages();
                 break;
 
+
+            /* **************
+             Server commands
+            *****************/
             case "list":
                 UserListHandler.request(sender);
-                break;
-
-            case "groups":
-                GroupHandler.requestList(sender);
                 break;
 
             case "dm":
                 DirectMessageHandler.send(sender, command);
                 break;
 
+
+            /* **************
+             Group commands
+            *****************/
+            case "groups":
+                GroupHandler.requestList(sender);
+                break;
+
+            case "create":
+                GroupHandler.createGroup(sender, command);
+                break;
+
+            case "join":
+                GroupHandler.joinGroup(sender, command);
+                break;
+
+            case "leave":
+                GroupHandler.leaveGroup(sender, user);
+                break;
+
+            case "kick":
+                GroupHandler.kickFromGroup(sender, command, user);
+                break;
+
+
+            /* **************
+                   Misc
+            *****************/
             default:
                 sender.send(String.format("CMD %s", command));
                 break;
@@ -41,7 +72,30 @@ public class CommandHandler {
 
     }
 
-    public static void handleResponse(String command, User user) {
+    public static void handleResponse(String line, User user) {
+
+        String details = line.replace("CMD ", "");
+
+        String[] parts = details.split(" ");
+
+        String type = parts[0];
+
+        switch (type) {
+
+            case "GROUP":
+                GroupHandler.handleResponse(details, user);
+                break;
+
+            default:
+                // Unknown
+                System.out.println(line);
+                break;
+
+        }
+
+    }
+
+    public static void handleOkResponse(String command, User user) {
 
         String command_name = command.split(" ")[0];
 
@@ -58,7 +112,7 @@ public class CommandHandler {
                 break;
 
             case "GROUP":
-                GroupHandler.handleResponse(response);
+                GroupHandler.handleOkResponse(response, user);
                 break;
 
             default:

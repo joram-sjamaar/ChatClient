@@ -3,8 +3,10 @@ package threads;
 import controllers.Controller;
 import handlers.ErrorHandler;
 import handlers.ResponseHandler;
+import handlers.commands.CommandHandler;
 import handlers.commands.DirectMessageHandler;
 import handlers.HeartBeatHandler;
+import handlers.commands.GroupHandler;
 import model.User;
 
 import java.io.*;
@@ -35,7 +37,7 @@ public class Receiver extends Thread {
                 if (message != null) {
 
                     // We've got an error!
-                    if (message.contains("-ERR"))
+                    if (message.startsWith("-ERR"))
                         ErrorHandler.handleError(message, controller);
 
                     // Pong timeout
@@ -43,16 +45,20 @@ public class Receiver extends Thread {
                         HeartBeatHandler.handleTimout();
 
                     // We've got an OK response
-                    else if (message.contains("+OK"))
+                    else if (message.startsWith("+OK"))
                         ResponseHandler.handleResponse(message, user, controller);
 
                     // Ping!
-                    else if (message.contains("PING"))
+                    else if (message.equals("PING"))
                         HeartBeatHandler.sendPong(sender);
 
                     // DM
-                    else if (message.contains("DM"))
+                    else if (message.startsWith("DM"))
                         DirectMessageHandler.handleDirectMessage(message, user);
+
+                    // GROUPS
+                    else if (message.startsWith("CMD"))
+                        CommandHandler.handleResponse(message, user);
 
                     // All others...
                     else

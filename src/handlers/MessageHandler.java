@@ -1,6 +1,7 @@
 package handlers;
 
 import handlers.commands.CommandHandler;
+import handlers.commands.GroupHandler;
 import model.User;
 import threads.Sender;
 
@@ -10,6 +11,10 @@ public class MessageHandler {
 
         if (message.startsWith("."))
             CommandHandler.handle(message, sender, user);
+
+        else if (user.isInGroup()) {
+            GroupHandler.messageGroup(user.getGroup(), sender, message);
+        }
 
         else {
             sender.broadcast(message);

@@ -37,7 +37,7 @@ public class ResponseHandler {
         // Happy flow: Command
         else if (response.contains("CMD")) {
             String message = response.replace("+OK CMD ", "");
-            CommandHandler.handleResponse(message, user);
+            CommandHandler.handleOkResponse(message, user);
         }
 
     }
