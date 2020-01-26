@@ -6,7 +6,7 @@ import handlers.ResponseHandler;
 import handlers.commands.CommandHandler;
 import handlers.commands.DirectMessageHandler;
 import handlers.HeartBeatHandler;
-import handlers.commands.GroupHandler;
+import handlers.commands.FileTransferHandler;
 import model.User;
 
 import java.io.*;
@@ -58,11 +58,15 @@ public class Receiver extends Thread {
 
                     // DM
                     else if (message.startsWith("DM"))
-                        DirectMessageHandler.handleDirectMessage(message, user);
+                        DirectMessageHandler.handle(message, user);
 
                     // GROUPS
                     else if (message.startsWith("CMD"))
                         CommandHandler.handleResponse(message, user);
+
+                        // GROUPS
+                    else if (message.startsWith("FILETRANSFER"))
+                        FileTransferHandler.handleFileTransfer(message, user);
 
                     // All others...
                     else

@@ -33,11 +33,9 @@ public class Sender extends Thread {
         writer.flush();
     }
 
-    public void sendFile(String username, String filename, int packageNumber, int totalPackages, byte[] content) {
+    public void sendFile(String username, String filename, int packageNumber, int totalPackages, String content) {
 
-        String bytes = new String(content);
-
-        String format = String.format("FILETRANSFER %s %s %d %d %s", filename, username, packageNumber, totalPackages, bytes);
+        String format = String.format("FILETRANSFER %s %s %d %d %s\n", filename, username, packageNumber, totalPackages, content);
 
         try {
             outputStream.write(format.getBytes(), 0, format.length());

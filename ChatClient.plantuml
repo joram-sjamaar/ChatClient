@@ -1,0 +1,225 @@
+@startuml
+
+title __CHATCLIENT's Class Diagram__\n
+
+    namespace controllers {
+      class controllers.Controller {
+          + exit : boolean
+          - login_error : String
+          - socket : Socket
+          - waiting_for_login : boolean
+          {static} + main()
+          + setLoginError()
+          + setWaitingForLogin()
+          - init()
+          - login()
+          - run()
+      }
+    }
+
+    namespace exceptions {
+        class exceptions.TooFewArgumentsException {
+            + TooFewArgumentsException()
+            + TooFewArgumentsException()
+        }
+      }
+
+
+    namespace handlers {
+      class handlers.ErrorHandler {
+          {static} + handleError()
+      }
+    }
+
+
+    namespace handlers {
+      class handlers.HeartBeatHandler {
+          {static} + handleTimout()
+          {static} + sendPong()
+      }
+    }
+
+
+    namespace handlers {
+      class handlers.MessageHandler {
+          {static} + handle()
+      }
+    }
+
+
+    namespace handlers {
+      class handlers.ResponseHandler {
+          {static} + handleResponse()
+      }
+    }
+
+
+    namespace handlers {
+      namespace commands {
+        class handlers.commands.CommandHandler {
+            {static} + handle()
+            {static} + handleOkResponse()
+            {static} + handleResponse()
+        }
+
+        class handlers.commands.DirectMessageHandler {
+            {static} + handleDirectMessage()
+            {static} + printDirectMessage()
+            {static} + send()
+        }
+
+        class handlers.commands.FileTransferHandler {
+                  {static} - PACKET_SIZE : int
+                  {static} + handleFileTransfer()
+                  {static} + transfer()
+                  {static} - sendFile()
+              }
+
+        class handlers.commands.GroupHandler {
+            {static} + createGroup()
+            {static} + handleOkResponse()
+            {static} + handleResponse()
+            {static} + joinGroup()
+            {static} + kickFromGroup()
+            {static} + leaveGroup()
+            {static} + messageGroup()
+            {static} + printMessage()
+            {static} + requestList()
+            {static} - handleJoinedGroup()
+            {static} - handleKick()
+            {static} - handleLeftGroup()
+            {static} - printCreatedGroup()
+            {static} - printGroupList()
+            {static} - printJoinedGroup()
+            {static} - printKicked()
+            {static} - printLeftGroup()
+        }
+
+        class handlers.commands.UserListHandler {
+            {static} + print()
+            {static} + request()
+        }
+      }
+    }
+
+
+    namespace model {
+      class model.Group {
+          - groupName : String
+          + Group()
+          + getGroupName()
+          + setGroupName()
+      }
+    }
+
+
+    namespace model {
+      class model.Message {
+          - date : Date
+          - message : String
+          + Message()
+          + getDate()
+          + getMessage()
+          + getMessageType()
+          + toString()
+      }
+    }
+
+
+    namespace model {
+      class model.User {
+          - inGroup : boolean
+          - loggedIn : boolean
+          - sentMessages : LinkedList<Message>
+          - username : String
+          + User()
+          + getGroup()
+          + getUsername()
+          + isInGroup()
+          + isLoggedIn()
+          + logSentMessage()
+          + printSentMessages()
+          + setGroup()
+          + setInGroup()
+          + setLoggedIn()
+          + setUsername()
+      }
+
+      class model.Recipient {
+              - privateKey : String
+              - username : String
+              + Recipient()
+              + equals()
+              + getPrivateKey()
+              + getUsername()
+              + hashCode()
+              + setPrivateKey()
+          }
+    }
+
+    namespace threads {
+      class threads.Receiver {
+          - reader : BufferedReader
+          + Receiver()
+          + run()
+          + setSender()
+          - getMessage()
+      }
+    }
+
+
+    namespace threads {
+        class threads.Sender {
+          ~ outputStream : OutputStream
+          ~ socket : Socket
+          + Sender()
+          + broadcast()
+          + login()
+          + logout()
+          + pong()
+          + send()
+          + sendFile()
+        }
+    }
+
+
+    namespace util {
+      enum MessageType {
+        BROADCAST
+        PRIVATE
+      }
+    }
+
+    threads.Receiver -- handlers.ResponseHandler
+    threads.Receiver -- handlers.ErrorHandler
+
+    handlers.commands.FileTransferHandler -- handlers.ErrorHandler
+    handlers.ResponseHandler -- handlers.commands.CommandHandler
+    handlers.commands.CommandHandler -- handlers.commands.GroupHandler
+    handlers.commands.CommandHandler -- handlers.commands.DirectMessageHandler
+    handlers.commands.CommandHandler -- handlers.commands.FileTransferHandler
+    handlers.commands.CommandHandler -- handlers.commands.UserListHandler
+    handlers.MessageHandler -- controllers.Controller
+    handlers.HeartBeatHandler -- threads.Receiver
+
+    exceptions.TooFewArgumentsException -- handlers.commands.FileTransferHandler
+
+    controllers.Controller o-- threads.Receiver : receiver
+    controllers.Controller o-- threads.Sender : sender
+    controllers.Controller o-- model.User : user
+
+    threads.Receiver o-- controllers.Controller : controller
+    threads.Receiver o-- threads.Sender : sender
+    threads.Receiver o-- model.User : user
+    threads.Sender o-- controllers.Controller : controller
+    threads.Sender o-- threads.Receiver : receiver
+    threads.Sender o-- model.User : user
+
+    model.User o-- model.Message
+    model.User o-- model.Group
+    model.User o-- model.Recipient
+    model.Message -- util.MessageType
+    util.MessageType -- model.User
+    util.MessageType -- handlers.ResponseHandler
+
+@enduml

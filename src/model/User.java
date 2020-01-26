@@ -2,6 +2,7 @@ package model;
 
 import util.MessageType;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class User {
@@ -11,6 +12,7 @@ public class User {
     private boolean inGroup;
     private Group group;
     private LinkedList<Message> sentMessages = new LinkedList<>();
+    private ArrayList<Recipient> recipients = new ArrayList<>();
 
     public User() {
         this.username = "";
@@ -52,6 +54,33 @@ public class User {
 
     public void logSentMessage(String message, MessageType type) {
         sentMessages.addFirst(new Message(message, type));
+    }
+
+    public ArrayList<Recipient> getRecipients() {
+        return recipients;
+    }
+
+    public void addRecipient(String username, String privateKey) {
+        if (hasRecipient(username))
+            getRecipient(username).setPrivateKey(privateKey);
+        else
+            recipients.add(new Recipient(username, privateKey));
+    }
+
+    public boolean hasRecipient(String username) {
+
+        for (Recipient r : recipients)
+            if (r.getUsername().equals(username)) return true;
+
+        return false;
+
+    }
+
+    public Recipient getRecipient(String username) {
+        for (Recipient r : recipients)
+            if (r.getUsername().equals(username)) return r;
+
+        return null;
     }
 
     public void printSentMessages() {

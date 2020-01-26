@@ -3,6 +3,7 @@ package handlers.commands;
 import controllers.Controller;
 import model.User;
 import threads.Sender;
+import util.Encryption;
 
 public class CommandHandler {
 
@@ -34,7 +35,7 @@ public class CommandHandler {
                 break;
 
             case "dm":
-                DirectMessageHandler.send(sender, command);
+                DirectMessageHandler.send(sender, command, user);
                 break;
 
 
@@ -117,7 +118,7 @@ public class CommandHandler {
                 break;
 
             case "DM":
-                DirectMessageHandler.printDirectMessage(response, user);
+                DirectMessageHandler.handleOkResponse(response, user);
                 break;
 
             case "GROUP":
